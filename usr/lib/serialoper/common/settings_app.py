@@ -20,3 +20,24 @@ class GeneralSettings():
         Notify.init("Operaciones RS232")
         notification = Notify.Notification.new(gs_title, gs_message, gs_icon)
         notification.show()
+
+    # Obtiene la IP local del equipo para mostrar
+    # Se crea un socket temporal para intentar conectarse a un servidor conocido (DNS de Google)
+    # Se obtiene la direccion IP utilizada para este proceso
+    # Si hay algun error, se coloca una IP 0.0.0.0 para error.
+    # Puede actualizarse el DNS a utilizar si se necesitan otras pruebas adicionales.
+    def get_local_ip(self):
+        local_ip = None
+        socket_connection = None
+
+        try:
+            socket_connection = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+            socket_connection.connect(("8.8.8.8", 80))
+            local_ip = socket_connection.getsockname()[0]
+        except:
+            local_ip = '0.0.0.0'
+        finally:
+            if socket_connection:
+                socket_connection.close()
+
+        return local_ip

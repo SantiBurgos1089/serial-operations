@@ -43,6 +43,20 @@ class WebsocketPage(Adw.NavigationPage):
         self.websocket_page = Adw.PreferencesPage()
         self.websocket_page.set_title("Websocket RS232")
 
+        self.serial_group = Adw.PreferencesGroup()
+        self.serial_group.set_title("Configuracion puerto serial")
+
+
+
+
+
+
+        self.websocket_group = Adw.PreferencesGroup()
+        self.websocket_group.set_title("Configuracion Websocket")
+
+
+        
+
         # Seccion de contenido donde ira cada subseccion
         self.ws_content_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=12)
         self.ws_content_box.set_hexpand(True)

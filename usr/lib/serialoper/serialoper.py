@@ -13,6 +13,8 @@ except(ValueError, ImportError):
 
 # Importacion de secciones
 from instructions_page import InstructionsPage
+from serial_monitor_page import SerialMonitorPage
+from websocket_page import WebsocketPage
 
 # Application ID
 app_id = "xyz.agatinos.serialoper"
@@ -73,16 +75,16 @@ class MainWindow(Adw.ApplicationWindow):
         #sidebar_listbox.append(sys_row)
 
         # Manejo de la navegacion por cada ActionRow definido
-        #def on_row_selected(listbox, row):
-        #    if row == monitor_row:
-        #        self.split_view.set_content(SerialMonitorPage())
-        #    elif row == ws_row:
-        #        self.split_view.set_content(WebsocketPage())
+        def on_row_selected(listbox, row):
+            if row == monitor_row:
+                self.split_view.set_content(SerialMonitorPage())
+            elif row == ws_row:
+                self.split_view.set_content(WebsocketPage())
         #    elif row == sys_row:
         #        self.split_view.set_content(OSSystemPage())
 
         # Conectando la accion de mostrar el menu en base a la seleccion de la fila
-        #sidebar_listbox.connect("row-selected", on_row_selected)
+        sidebar_listbox.connect("row-selected", on_row_selected)
 
         # Añadiendo el ListBox creado junto con cada uno de los menus
         sidebar_box.append(sidebar_listbox)

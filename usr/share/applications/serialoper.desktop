@@ -1,0 +1,13 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=Serial RS232 Operations
+Name[es]=Operaciones puerto serial RS232
+Comment=Handle general operations for reading data from RS232 serial port
+Comment[es]=Manejo de operaciones generales para lectura de datos de puerto serial RS232
+Exec=serialoper
+Icon=network-transmit
+StartupNotify=true
+Terminal=false
+Type=Application
+Categories=GNOME;GTK;Settings;System;XFCE;X-XFCE-SettingsDialog;X-XFCE-SystemSettings;
+X-KDE-SubstituteUID=true

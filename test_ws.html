@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>WebSocket RS232</title>
+</head>
+<body>
+
+<h2>Cliente WebSocket RS232</h2>
+
+<label>IP:</label>
+<input type="text" id="ip" value="127.0.0.1">
+
+<br><br>
+
+<label>Puerto:</label>
+<select id="port">
+    <option>5050</option>
+    <option>8765</option>
+    <option>8080</option>
+    <option>9000</option>
+</select>
+
+<br><br>
+
+<button onclick="toggleConnection()" id="btn">Conectar</button>
+
+<h3>Valor:</h3>
+<h1 id="value">0</h1>
+
+<script>
+let ws = null;
+
+function toggleConnection() {
+    const btn = document.getElementById("btn");
+
+    if (ws) {
+        ws.close();
+        ws = null;
+        btn.innerText = "Conectar";
+        document.getElementById("value").innerText = "0";
+        return;
+    }
+
+    const ip = document.getElementById("ip").value;
+    const port = document.getElementById("port").value;
+
+    try {
+        ws = new WebSocket(`ws://${ip}:${port}`);
+
+        ws.onopen = () => {
+            btn.innerText = "Desconectar";
+        };
+
+        ws.onmessage = (event) => {
+            document.getElementById("value").innerText = event.data;
+        };
+
+        ws.onerror = () => {
+            document.getElementById("value").innerText = "0";
+        };
+
+        ws.onclose = () => {
+            document.getElementById("value").innerText = "0";
+            btn.innerText = "Conectar";
+            ws = null;
+        };
+
+    } catch {
+        document.getElementById("value").innerText = "0";
+    }
+}
+</script>
+
+</body>
+</html>

@@ -41,3 +41,22 @@ class GeneralSettings():
                 socket_connection.close()
 
         return local_ip
+
+    # Busco todos los puertos seriales detectados por el sistema, estos pueden aparecer como:
+    # /dev/ttyS[0-9] para los puertos seriales integrados en el equipo
+    # /dev/ttyUSB[0-9] para adaptadores USB a serie RS232
+    # /dev/ttyACM* para otros microcontroladores como dispositivos Arduino
+    def get_serial_ports(self):
+        detected_ports = []
+
+        for port in os.listdir('/dev'):
+            if re.match(r'^ttyUSB\d+$', port):
+                detected_ports.append(f"/dev/{port}")
+
+            if re.match(r'^ttyS\d+$', port):
+                detected_ports.append(f"/dev/{port}")
+
+            if re.match(r'^ttyACM\d+$', port):
+                detected_ports.append(f"/dev/{port}")
+
+        return detected_ports

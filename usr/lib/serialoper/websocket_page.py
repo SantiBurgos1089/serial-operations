@@ -34,10 +34,14 @@ class WebsocketPage(Adw.NavigationPage):
 
         self.logging = False
 
-        # Seccion central donde ira cada subseccion
+        # Seccion central donde ira cada grupo
         self.ws_central_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
         self.ws_central_box.set_hexpand(True)
         self.ws_central_box.set_vexpand(True)
+
+        # PreferencesPage definition
+        self.websocket_page = Adw.PreferencesPage()
+        self.websocket_page.set_title("Websocket RS232")
 
         # Seccion de contenido donde ira cada subseccion
         self.ws_content_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=12)

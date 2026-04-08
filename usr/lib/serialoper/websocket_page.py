@@ -147,8 +147,8 @@ class WebsocketPage(Adw.NavigationPage):
         #self.ipport_row.set_subtitle("Seleccione como mostrar su equipo")
         self.local_ip = genset.get_local_ip()
         self.ipport_string_list = Gtk.StringList.new([
-            self.local_ip, 
-            "127.0.0.1", 
+            "127.0.0.1",
+            self.local_ip,
             "0.0.0.0"])
         self.ipport_row.set_model(self.ipport_string_list)
 

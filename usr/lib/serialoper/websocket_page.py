@@ -34,7 +34,7 @@ class WebsocketPage(Adw.NavigationPage):
 
         self.logging = False
 
-        # Seccion central donde ira cada grupo
+        # Seccion central donde ira la pagina de preferencias
         self.ws_central_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
         self.ws_central_box.set_hexpand(True)
         self.ws_central_box.set_vexpand(True)
@@ -177,6 +177,7 @@ class WebsocketPage(Adw.NavigationPage):
         #self.process_button.set_label("Iniciar WebSocket")
         self.process_button.set_icon_name("xsi-media-playback-start-symbolic")
         #self.process_button.connect("clicked", self.ws_log_data)
+        self.process_button.connect("clicked", self.ws_toggle_log)
         self.process_row.add_suffix(self.data_label)
         self.process_row.add_suffix(self.process_button)
 
@@ -218,23 +219,26 @@ class WebsocketPage(Adw.NavigationPage):
         # Obtiene todos los controles creados hasta el momento que puedan ser
         # manipulados por el usuario, otros controles no son considerados
         gtk_controls = [
-            self.ws_ports_dropdown,
-            self.ws_ipport_dropdown,
-            self.ws_baudrate_dropdown,
-            self.ws_databits_dropdown,
-            self.ws_parity_dropdown,
-            self.ws_stopbits_dropdown,
-            self.ws_flowcontrol_dropdown,
-            self.refresh_ports_button
+            self.rsport_row,
+            self.baudrate_row,
+            self.databits_row,
+            self.parity_row,
+            self.stopbits_row,
+            self.flowcontrol_row,
+            self.timeout_row,
+            self.ipport_row,
+            self.wsport_row
         ]
 
-        for control in gtk_controls:
+        for controls in gtk_controls:
             if self.logging:
-                button.set_label("Parar WebSocket")
-                control.set_sensitive(False)
+                self.process_row.set_subtitle("Parar WebSocket")
+                button.set_icon_name("xsi-media-playback-stop-symbolic")
+                controls.set_sensitive(False)
             else:
-                button.set_label("Iniciar WebSocket")
-                control.set_sensitive(True)
+                self.process_row.set_subtitle("Iniciar WebSocket")
+                button.set_icon_name("xsi-media-playback-start-symbolic")
+                controls.set_sensitive(True)
 
     def update_ws_label(self, value):
         self.data_label.set_label(value)

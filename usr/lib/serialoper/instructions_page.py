@@ -43,7 +43,7 @@ class InstructionsPage(Adw.NavigationPage):
         self.left_status_page.set_description("Esta seccion permite realizar pruebas generales con el puerto serial RS232. \n" \
         "Puede configurar los parametros de lectura de su dispositivo serial segun el manual de su fabricante. \n" \
         "Una vez colocado los parametros, hacer clic en el boton de \"Iniciar lectura\" para comenzar a verificar datos")
-        self.left_status_page.set_icon_name("network-transmit-receive")
+        self.left_status_page.set_icon_name("xsi-network-symbolic")
 
         self.ip_leftbox.append(self.left_status_page)
 
@@ -59,7 +59,7 @@ class InstructionsPage(Adw.NavigationPage):
         "Puede configurar los parametros de lectura de su dispositivo serial segun el manual de su fabricante, \n" \
         "adicionalmente, debe configurar en su sitio web la direccion IP y el puerto ocupado segun su documentacion o manejo de dicho sitio \n" \
         "Una vez colocado los parametros, hacer clic en el boton de \"Iniciar WebSocket\" para comenzar a leer y enviar los datos respectivos")
-        self.right_status_page.set_icon_name("network-transmit-receive")
+        self.right_status_page.set_icon_name("xsi-network-symbolic")
 
         self.ip_rightbox.append(self.right_status_page)
 

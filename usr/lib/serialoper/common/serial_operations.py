@@ -4,7 +4,7 @@ import serial
 import threading
 import websockets
 from gi.repository import GLib
-from settings_app import GeneralSettings
+from .settings_app import GeneralSettings
 
 # ──────────────────────────────────────────────────────────────────────────────
 # Valores de configuracion de puerto serial a controles en frontend.

@@ -137,10 +137,6 @@ class WebsocketPage(Adw.NavigationPage):
         self.websocket_page.add(self.serial_group)
 
 
-
-
-
-
         # Websocket section
         self.websocket_group = Adw.PreferencesGroup()
         self.websocket_group.set_title("Configuracion Websocket")
@@ -211,11 +207,7 @@ class WebsocketPage(Adw.NavigationPage):
         # 3. Reemplazamos el modelo del ComboRow
         self.rsport_row.set_model(self.ws_port_string_list)
 
-        # 4. Si hay puertos disponibles, seleccionamos el primero para evitar que quede en blanco
-        if self.available_ports:
-            self.ws_ports_dropdown.set_selected(0)
-
-        ## 5. Notificamos al usuario (opcional)
+        ## 4. Notificamos al usuario (opcional)
         #genset.send_notifications("Estado", "Lista de puertos actualizada")
         #print("[Sistema] Puertos seriales refrescados."
 
@@ -245,7 +237,7 @@ class WebsocketPage(Adw.NavigationPage):
                 control.set_sensitive(True)
 
     def update_ws_label(self, value):
-        self.ws_data_label.set_label(value)
+        self.data_label.set_label(value)
 
     def ws_log_data(self, button):
         info_rs_port = self.ws_ports_dropdown.get_selected()

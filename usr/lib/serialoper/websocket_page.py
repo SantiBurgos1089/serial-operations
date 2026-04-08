@@ -341,14 +341,14 @@ class WebsocketPage(Adw.NavigationPage):
         # 2. Creamos un nuevo StringList con los datos frescos
         self.ws_port_string_list = Gtk.StringList.new(self.available_ports)
 
-        # 3. Reemplazamos el modelo del DropDown
-        self.ws_ports_dropdown.set_model(self.ws_port_string_list)
+        # 3. Reemplazamos el modelo del ComboRow
+        self.rsport_row.set_model(self.ws_port_string_list)
 
         # 4. Si hay puertos disponibles, seleccionamos el primero para evitar que quede en blanco
         if self.available_ports:
             self.ws_ports_dropdown.set_selected(0)
 
-        ## 5. Notificamos al usuario
+        ## 5. Notificamos al usuario (opcional)
         #genset.send_notifications("Estado", "Lista de puertos actualizada")
         #print("[Sistema] Puertos seriales refrescados."
 

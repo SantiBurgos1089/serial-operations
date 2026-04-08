@@ -4,11 +4,14 @@ import serial
 import threading
 import websockets
 from gi.repository import GLib
-from .settings_app import GeneralSettings
+from settings_app import GeneralSettings
 
-# Mapeando los valores y parametros de configuracion de puerto serial a los controles creados en el frontend
-# Si un valor segun su frontend no corresponde en texto puede hacer el cambio manualmente en el diccionario, 
-# si así es requerido, pero estos deben ser valores validos y existentes en base a la libreria pyserial
+# ──────────────────────────────────────────────────────────────────────────────
+# Valores de configuracion de puerto serial a controles en frontend.
+# Si un valor segun su frontend utilizado no corresponde en texto puede hacer el
+# cambio de manera manual en el diccionario si asi es requerido, pero estos deben
+# ser valores validos y existentes en base a la libreria pyserial.
+# ──────────────────────────────────────────────────────────────────────────────
 
 # Data bits
 DATABITS_MAP = {
@@ -42,6 +45,37 @@ FLOWCONTROL_MAP = {
     "Hardware": True,
     "Xon/Xoff": False,
     }
+
+# ──────────────────────────────────────────────────────────────────────────────
+# Valores de configuracion de valores en equipos seriales RS232
+# Los datos aca descritos son valores generales existentes en varios equipos en 
+# base a configuraciones existentes, no hay un estandar definido y puede agregar 
+# otros valores que considere que no existan si asi lo considera necesario para
+# su frontend ocupado.
+# ──────────────────────────────────────────────────────────────────────────────
+
+# Baudrate de equipos seriales
+BAUDRATE = [
+    "100", "300", "600", "1200", "2400", "4800",
+    "9600", "14400", "19200", "38400", "56000", 
+    "57600", "115200", "128000", "256000"
+]
+
+# Databits
+DATA_BITS = ["5", "6", "7", "8"]
+
+# Paridad
+PARITY = ["Ninguna", "Par", "Impar", "Espacio", "Marca"]
+
+# Bit parada
+STOP_BITS = ["1", "1.5", "2"]
+
+# Control de flujo
+FLOW_CONTROL = ["Ninguno", "Hardware", "Xon/Xoff"]
+
+# Puerto websocket
+WEBSOCKET_PORT = ["5050", "8765", "9000"]
+
 
 genset = GeneralSettings()
 

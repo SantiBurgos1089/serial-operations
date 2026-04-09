@@ -312,3 +312,8 @@ class MonitorPage(Adw.NavigationPage):
     def show_in_textview(self, text):
         buffer = self.data_textview.get_buffer()
         buffer.insert(buffer.get_end_iter(), text + "\n")
+
+    def sm_clear_data(self, widget):
+        buffer = self.data_textview.get_buffer()
+        buffer.set_text("")
+        genset.send_notifications("Estado", "Limpiando datos")

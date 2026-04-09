@@ -304,16 +304,18 @@ class WebsocketPage(Adw.NavigationPage):
             for controls in gtk_controls:
                 controls.set_sensitive(False)
 
-            serws.start_serial_monitor(self.update_data_label, 
-                                       rsport_info, 
-                                       baudrate_info, 
-                                       databits_info, 
+            serws.start_serial_monitor(self.update_data_label,
+                                       rsport_info,
+                                       baudrate_info,
+                                       databits_info,
                                        parity_info,
-                                       stopbits_info, 
-                                       flowcontrol_info, 
-                                       "Xon/Xoff", 
+                                       stopbits_info,
+                                       flowcontrol_info,
+                                       "Xon/Xoff",
+                                       timeout_info,
                                        ipport_info,
-                                       wsport_info)
+                                       wsport_info 
+            )
             
         else:
             self.logging = False

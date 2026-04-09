@@ -295,7 +295,9 @@ class MonitorPage(Adw.NavigationPage):
                                         parity_info,
                                         stopbits_info,
                                         flowcontrol_info,
-                                        "Xon/Xoff")
+                                        "Xon/Xoff",
+                                        timeout_info
+                                        )
             
         else:
             self.logging = False

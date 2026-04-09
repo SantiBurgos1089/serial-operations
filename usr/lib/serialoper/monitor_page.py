@@ -160,8 +160,7 @@ class MonitorPage(Adw.NavigationPage):
         self.clear_row.set_title("Limpiar lectura")
         self.clear_button = Gtk.Button()
         self.clear_button.set_icon_name("xsi-edit-clear-symbolic")
-        #self.clear_button.connect("clicked", self.sm_clear_data)
-        #self.clear_button.connect("clicked", self.sm_toggle_log)
+        self.clear_button.connect("clicked", self.sm_clear_data)
         self.clear_row.add_suffix(self.clear_button)
 
         # Add row to section

@@ -19,7 +19,7 @@ genset = common.settings_app.GeneralSettings()
 serws = common.serial_operations.SerialWebsocket()
 
 # Configuracion de la seccion central donde iran todas las subsecciones
-class WebsocketPage(Adw.NavigationPage):
+class MonitorPage(Adw.NavigationPage):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -29,19 +29,19 @@ class WebsocketPage(Adw.NavigationPage):
         self.refresh_ports_button.set_tooltip_text("Refrescar puertos disponibles")
         self.refresh_ports_button.connect("clicked", self.sm_refresh_ports)
 
-        self.ws_headerbar = Adw.HeaderBar()
-        self.ws_headerbar.pack_start(self.refresh_ports_button)
+        self.sm_headerbar = Adw.HeaderBar()
+        self.sm_headerbar.pack_start(self.refresh_ports_button)
 
         self.logging = False
 
         # Seccion central donde ira la pagina de preferencias
-        self.ws_central_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
-        self.ws_central_box.set_hexpand(True)
-        self.ws_central_box.set_vexpand(True)
+        self.sm_central_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
+        self.sm_central_box.set_hexpand(True)
+        self.sm_central_box.set_vexpand(True)
 
         # PreferencesPage definition
-        self.websocket_page = Adw.PreferencesPage()
-        self.websocket_page.set_title("Websocket RS232")
+        self.monitor_page = Adw.PreferencesPage()
+        self.monitor_page.set_title("Monitor RS232")
 
         # Serial port section
         self.serial_group = Adw.PreferencesGroup()
@@ -134,7 +134,7 @@ class WebsocketPage(Adw.NavigationPage):
         self.serial_group.add(self.timeout_row)
 
         # Add section with all controls to page
-        self.websocket_page.add(self.serial_group)
+        self.monitor_page.add(self.serial_group)
 
 
         # Websocket section
@@ -185,17 +185,17 @@ class WebsocketPage(Adw.NavigationPage):
         self.websocket_group.add(self.process_row)
 
         # Add section with all controls to page
-        self.websocket_page.add(self.websocket_group)
+        self.monitor_page.add(self.websocket_group)
 
         # Añadiendo la seccion de contenido a la seccion central
-        self.ws_central_box.append(self.websocket_page)
+        self.sm_central_box.append(self.monitor_page)
 
         # Añadiendo la cabecera y contenido
         self.ws_toolbar = Adw.ToolbarView()
-        self.ws_toolbar.add_top_bar(self.ws_headerbar)
-        self.ws_toolbar.set_content(self.ws_central_box)
+        self.ws_toolbar.add_top_bar(self.sm_headerbar)
+        self.ws_toolbar.set_content(self.sm_central_box)
 
-        self.set_title("Websocket RS232")
+        self.set_title("Monitor RS232")
         self.set_child(self.ws_toolbar)
 
     def sm_refresh_ports(self, button):

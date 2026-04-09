@@ -240,71 +240,85 @@ class WebsocketPage(Adw.NavigationPage):
                 button.set_icon_name("xsi-media-playback-start-symbolic")
                 controls.set_sensitive(True)
 
-    def update_ws_label(self, value):
+    def update_data_label(self, value):
         self.data_label.set_label(value)
 
     def ws_log_data(self, button):
-        info_rs_port = self.ws_ports_dropdown.get_selected()
-        info_rs_port = self.ws_port_string_list.get_string(info_rs_port)
+        ## Cambiamos el estado del estado de logging
+        #self.logging = not self.logging
 
-        info_baudrate = self.ws_baudrate_dropdown.get_selected()
-        info_baudrate = self.ws_baudrate_string_list.get_string(info_baudrate)
+        # Obtengo el dato seleccionado del ComboRow, para ello realizo lo siguiente
+        # Obtengo el numero del elemento seleccionado
+        # En base a ese numero, obtengo dicho elemento del StringList como valor
+        # Se obtiene un texto de lo seleccionado y se convertira en numerico en la funcion
+        rsport_info = self.rsport_row.get_selected()
+        rsport_info = self.rsport_string_list.get_string(rsport_info)
 
-        info_databits = self.ws_databits_dropdown.get_selected()
-        info_databits = self.ws_databits_string_list.get_string(info_databits)
+        baudrate_info = self.baudrate_row.get_selected()
+        baudrate_info = self.baudrate_string_list.get_string(baudrate_info)
 
-        info_parity = self.ws_parity_dropdown.get_selected()
-        info_parity = self.ws_parity_string_list.get_string(info_parity)
+        databits_info = self.databits_row.get_selected()
+        databits_info = self.databits_string_list.get_string(databits_info)
 
-        info_stopbits = self.ws_stopbits_dropdown.get_selected()
-        info_stopbits = self.ws_stopbits_string_list.get_string(info_stopbits)
+        parity_info = self.parity_row.get_selected()
+        parity_info = self.parity_string_list.get_string(parity_info)
 
-        info_flowcontrol = self.ws_flowcontrol_dropdown.get_selected()
-        info_flowcontrol = self.ws_flowcontrol_string_list.get_string(info_flowcontrol)
+        stopbits_info = self.stopbits_row.get_selected()
+        stopbits_info = self.stopbits_string_list.get_string(stopbits_info)
 
-        info_ip_port = self.ws_ip_entry.get_text()
-        info_ws_port = self.ws_ipport_dropdown.get_selected()
-        info_ws_port = int(self.ws_ipport_string_list.get_string(info_ws_port))
+        flowcontrol_info = self.flowcontrol_row.get_selected()
+        flowcontrol_info = self.flowcontrol_string_list.get_string(flowcontrol_info)
 
-                # Obtiene todos los controles creados hasta el momento que puedan ser
+        timeout_info = self.time_scale.get_value()
+
+        ipport_info = self.ipport_row.get_selected()
+        ipport_info = self.ipport_string_list.get_string(ipport_info)
+
+        wsport_info = self.wsport_row.get_selected()
+        wsport_info = self.wsport_string_list.get_string(wsport_info)
+
+        # Obtiene todos los controles creados hasta el momento que puedan ser
         # manipulados por el usuario, otros controles no son considerados
         gtk_controls = [
-            self.ws_ports_dropdown,
-            self.ws_ipport_dropdown,
-            self.ws_baudrate_dropdown,
-            self.ws_databits_dropdown,
-            self.ws_parity_dropdown,
-            self.ws_stopbits_dropdown,
-            self.ws_flowcontrol_dropdown,
-            self.refresh_ports_button
+            self.rsport_row,
+            self.baudrate_row,
+            self.databits_row,
+            self.parity_row,
+            self.stopbits_row,
+            self.flowcontrol_row,
+            self.timeout_row,
+            self.ipport_row,
+            self.wsport_row
         ]
 
         if not self.logging:
             self.logging = True
-            button.set_label("Parar WebSocket")
+            self.process_row.set_subtitle("Parar WebSocket")
+            button.set_icon_name("xsi-media-playback-stop-symbolic")
             genset.send_notifications("Estado", "Iniciando Websocket")
 
-            for control in gtk_controls:
-                control.set_sensitive(False)
+            for controls in gtk_controls:
+                controls.set_sensitive(False)
 
-            serws.start_serial_monitor(self.update_ws_label, 
-                                       info_rs_port, 
-                                       info_baudrate, 
-                                       info_databits, 
-                                       info_parity, 
-                                       info_stopbits, 
-                                       info_flowcontrol, 
+            serws.start_serial_monitor(self.update_data_label, 
+                                       rsport_info, 
+                                       baudrate_info, 
+                                       databits_info, 
+                                       parity_info,
+                                       stopbits_info, 
+                                       flowcontrol_info, 
                                        "Xon/Xoff", 
-                                       info_ip_port, 
-                                       info_ws_port)
+                                       ipport_info,
+                                       wsport_info)
             
         else:
             self.logging = False
-            button.set_label("Iniciar WebSocket")
+            self.process_row.set_subtitle("Iniciar WebSocket")
+            self.data_label.set_label("LecturaWS: 0")
+            button.set_icon_name("xsi-media-playback-start-symbolic")
             genset.send_notifications("Estado", "Deteniendo Websocket")
 
             for control in gtk_controls:
                 control.set_sensitive(True)
 
             serws.stop_rs()
-            self.ws_data_label.set_label("LecturaWS: 0")

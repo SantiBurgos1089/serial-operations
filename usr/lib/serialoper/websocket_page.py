@@ -46,6 +46,8 @@ class WebsocketPage(Adw.NavigationPage):
         # Serial port section
         self.serial_group = Adw.PreferencesGroup()
         self.serial_group.set_title("Configuracion puerto serial")
+        self.serial_group.set_description("Coloque los parametros para poder leer informacion en base " \
+        "al equipo desde el cual desea leer.")
 
         # ComboRow para puertos disponibles
         self.rsport_row = Adw.ComboRow()
@@ -140,6 +142,8 @@ class WebsocketPage(Adw.NavigationPage):
         # Websocket section
         self.websocket_group = Adw.PreferencesGroup()
         self.websocket_group.set_title("Configuracion Websocket")
+        self.websocket_group.set_description("Coloque los parametros adicionales para que el equipo " \
+        "funcione como transmision a otros dispositivos.")
 
         # ComboRow para direccion IP del equipo y como mostrarse
         self.ipport_row = Adw.ComboRow()

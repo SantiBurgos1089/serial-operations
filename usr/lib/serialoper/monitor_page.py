@@ -139,55 +139,28 @@ class MonitorPage(Adw.NavigationPage):
         self.monitor_page.add(self.serial_group)
 
 
-        # Websocket section
-        self.websocket_group = Adw.PreferencesGroup()
-        self.websocket_group.set_title("Configuracion Websocket")
+        # Serial data log section
+        self.log_group = Adw.PreferencesGroup()
+        self.log_group.set_title("Lectura de datos")
 
-        # ComboRow para direccion IP del equipo y como mostrarse
-        self.ipport_row = Adw.ComboRow()
-        self.ipport_row.set_title("Direccion IP")
-        #self.ipport_row.set_subtitle("Seleccione como mostrar su equipo")
-        self.local_ip = genset.get_local_ip()
-        self.ipport_string_list = Gtk.StringList.new([
-            "127.0.0.1",
-            self.local_ip,
-            "0.0.0.0"])
-        self.ipport_row.set_model(self.ipport_string_list)
+        # TextView para mostrar datos recibidos del puerto serial
+        # Incluye un ScrolledWindow para que dicho TextView muestre barras de desplazamiento
+        self.data_textview = Gtk.TextView()
+        self.data_textview.set_wrap_mode(Gtk.WrapMode.WORD)
+        self.data_textview.set_editable(False)
+        self.data_textview.set_hexpand(True)
+        self.data_textview.set_vexpand(True)
+        self.data_scrollview = Gtk.ScrolledWindow()
+        self.data_scrollview.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
+        self.data_scrollview.set_hexpand(True)
+        self.data_scrollview.set_vexpand(True)
+        self.data_scrollview.set_child(self.data_textview)
 
-        # Add row to section
-        self.websocket_group.add(self.ipport_row)
-
-        # ComboRow para puerto de red del websocket a configurar
-        self.wsport_row = Adw.ComboRow()
-        self.wsport_row.set_title("Puerto de red a utilizar WebSocket")
-        self.wsport_string_list = Gtk.StringList.new()
-        for wsport in common.serial_operations.WEBSOCKET_PORT:
-            self.wsport_string_list.append(wsport)
-        self.wsport_row.set_model(self.wsport_string_list)
-        self.wsport_row.set_selected(0)
-
-        # Add row to section
-        self.websocket_group.add(self.wsport_row)
-
-        # Row para proceso de inicio websocket
-        self.process_row = Adw.ActionRow()
-        self.process_row.set_title("Gestiona el inicio y finalizacion del websocket")
-        self.process_row.set_subtitle("Iniciar WebSocket")
-        self.data_label = Gtk.Label()
-        self.data_label.set_label("Lectura WS: 0")
-        self.process_button = Gtk.Button()
-        #self.process_button.set_label("Iniciar WebSocket")
-        self.process_button.set_icon_name("xsi-media-playback-start-symbolic")
-        #self.process_button.connect("clicked", self.ws_log_data)
-        self.process_button.connect("clicked", self.ws_toggle_log)
-        self.process_row.add_suffix(self.data_label)
-        self.process_row.add_suffix(self.process_button)
-
-        # Add row to section
-        self.websocket_group.add(self.process_row)
+        # Add TextView to section
+        self.log_group.add(self.data_scrollview)
 
         # Add section with all controls to page
-        self.monitor_page.add(self.websocket_group)
+        self.monitor_page.add(self.log_group)
 
         # Añadiendo la seccion de contenido a la seccion central
         self.sm_central_box.append(self.monitor_page)
@@ -205,10 +178,10 @@ class MonitorPage(Adw.NavigationPage):
         self.available_ports = genset.get_serial_ports()
 
         # 2. Creamos un nuevo StringList con los datos frescos
-        self.ws_port_string_list = Gtk.StringList.new(self.available_ports)
+        self.sm_port_string_list = Gtk.StringList.new(self.available_ports)
 
         # 3. Reemplazamos el modelo del ComboRow
-        self.rsport_row.set_model(self.ws_port_string_list)
+        self.rsport_row.set_model(self.sm_port_string_list)
 
         ## 4. Notificamos al usuario (opcional)
         #genset.send_notifications("Estado", "Lista de puertos actualizada")
@@ -227,9 +200,7 @@ class MonitorPage(Adw.NavigationPage):
             self.parity_row,
             self.stopbits_row,
             self.flowcontrol_row,
-            self.timeout_row,
-            self.ipport_row,
-            self.wsport_row
+            self.timeout_row
         ]
 
         for controls in gtk_controls:

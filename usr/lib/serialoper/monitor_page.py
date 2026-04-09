@@ -143,6 +143,30 @@ class MonitorPage(Adw.NavigationPage):
         self.log_group = Adw.PreferencesGroup()
         self.log_group.set_title("Lectura de datos")
 
+        # Row para proceso de monitoreo
+        self.process_row = Adw.ActionRow()
+        self.process_row.set_title("Iniciar Log")
+        self.process_button = Gtk.Button()
+        self.process_button.set_icon_name("xsi-media-playback-start-symbolic")
+        #self.process_button.connect("clicked", self.sm_log_data)
+        self.process_button.connect("clicked", self.ws_toggle_log)
+        self.process_row.add_suffix(self.process_button)
+
+        # Add row to section
+        self.log_group.add(self.process_row)
+
+        # Row para limpieza de datos
+        self.clear_row = Adw.ActionRow()
+        self.clear_row.set_title("Limpiar lectura")
+        self.clear_button = Gtk.Button()
+        self.clear_button.set_icon_name("xsi-edit-clear-symbolic")
+        #self.clear_button.connect("clicked", self.sm_clear_data)
+        #self.clear_button.connect("clicked", self.ws_toggle_log)
+        self.clear_row.add_suffix(self.clear_button)
+
+        # Add row to section
+        self.log_group.add(self.clear_row)
+
         # TextView para mostrar datos recibidos del puerto serial
         # Incluye un ScrolledWindow para que dicho TextView muestre barras de desplazamiento
         self.data_textview = Gtk.TextView()
@@ -200,16 +224,15 @@ class MonitorPage(Adw.NavigationPage):
             self.parity_row,
             self.stopbits_row,
             self.flowcontrol_row,
-            self.timeout_row
+            self.timeout_row,
+            self.clear_row
         ]
 
         for controls in gtk_controls:
             if self.logging:
-                self.process_row.set_subtitle("Parar WebSocket")
                 button.set_icon_name("xsi-media-playback-stop-symbolic")
                 controls.set_sensitive(False)
             else:
-                self.process_row.set_subtitle("Iniciar WebSocket")
                 button.set_icon_name("xsi-media-playback-start-symbolic")
                 controls.set_sensitive(True)
 

@@ -289,7 +289,7 @@ class MonitorPage(Adw.NavigationPage):
             for controls in gtk_controls:
                 controls.set_sensitive(False)
 
-            seroper.logs_serial_monitor(None,
+            seroper.logs_serial_monitor(self.show_in_textview,
                                         rsport_info,
                                         baudrate_info,
                                         databits_info,
@@ -308,3 +308,7 @@ class MonitorPage(Adw.NavigationPage):
                 control.set_sensitive(True)
 
             seroper.stop_read_serial()
+
+    def show_in_textview(self, text):
+        buffer = self.data_textview.get_buffer()
+        buffer.insert(buffer.get_end_iter(), text + "\n")

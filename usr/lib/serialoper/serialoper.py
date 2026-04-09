@@ -13,7 +13,8 @@ except(ValueError, ImportError):
 
 # Importacion de secciones
 from instructions_page import InstructionsPage
-from serial_monitor_page import SerialMonitorPage
+#from serial_monitor_page import SerialMonitorPage
+from monitor_page import MonitorPage
 from websocket_page import WebsocketPage
 
 # Application ID
@@ -77,7 +78,8 @@ class MainWindow(Adw.ApplicationWindow):
         # Manejo de la navegacion por cada ActionRow definido
         def on_row_selected(listbox, row):
             if row == monitor_row:
-                self.split_view.set_content(SerialMonitorPage())
+                #self.split_view.set_content(SerialMonitorPage())
+                self.split_view.set_content(MonitorPage())
             elif row == ws_row:
                 self.split_view.set_content(WebsocketPage())
         #    elif row == sys_row:

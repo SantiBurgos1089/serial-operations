@@ -16,7 +16,7 @@ import common.settings_app
 
 # Variables adicionales
 genset = common.settings_app.GeneralSettings()
-serws = common.serial_operations.SerialWebsocket()
+seroper = common.serial_operations.SerialReader()
 
 # Configuracion de la seccion central donde iran todas las subsecciones
 class MonitorPage(Adw.NavigationPage):
@@ -149,7 +149,7 @@ class MonitorPage(Adw.NavigationPage):
         self.process_button = Gtk.Button()
         self.process_button.set_icon_name("xsi-media-playback-start-symbolic")
         #self.process_button.connect("clicked", self.sm_log_data)
-        self.process_button.connect("clicked", self.ws_toggle_log)
+        self.process_button.connect("clicked", self.sm_toggle_log)
         self.process_row.add_suffix(self.process_button)
 
         # Add row to section
@@ -161,7 +161,7 @@ class MonitorPage(Adw.NavigationPage):
         self.clear_button = Gtk.Button()
         self.clear_button.set_icon_name("xsi-edit-clear-symbolic")
         #self.clear_button.connect("clicked", self.sm_clear_data)
-        #self.clear_button.connect("clicked", self.ws_toggle_log)
+        #self.clear_button.connect("clicked", self.sm_toggle_log)
         self.clear_row.add_suffix(self.clear_button)
 
         # Add row to section
@@ -211,7 +211,7 @@ class MonitorPage(Adw.NavigationPage):
         #genset.send_notifications("Estado", "Lista de puertos actualizada")
         #print("[Sistema] Puertos seriales refrescados."
 
-    def ws_toggle_log(self, button):
+    def sm_toggle_log(self, button):
         # Cambiamos el estado del estado de logging
         self.logging = not self.logging
 
@@ -231,15 +231,14 @@ class MonitorPage(Adw.NavigationPage):
         for controls in gtk_controls:
             if self.logging:
                 button.set_icon_name("xsi-media-playback-stop-symbolic")
+                self.process_row.set_title("Parar Log")
                 controls.set_sensitive(False)
             else:
                 button.set_icon_name("xsi-media-playback-start-symbolic")
+                self.process_row.set_title("Iniciar Log")
                 controls.set_sensitive(True)
 
-    def update_data_label(self, value):
-        self.data_label.set_label(value)
-
-    def ws_log_data(self, button):
+    def sm_log_data(self, button):
         ## Cambiamos el estado del estado de logging
         #self.logging = not self.logging
 
@@ -267,12 +266,6 @@ class MonitorPage(Adw.NavigationPage):
 
         timeout_info = self.time_scale.get_value()
 
-        ipport_info = self.ipport_row.get_selected()
-        ipport_info = self.ipport_string_list.get_string(ipport_info)
-
-        wsport_info = self.wsport_row.get_selected()
-        wsport_info = self.wsport_string_list.get_string(wsport_info)
-
         # Obtiene todos los controles creados hasta el momento que puedan ser
         # manipulados por el usuario, otros controles no son considerados
         gtk_controls = [
@@ -289,32 +282,29 @@ class MonitorPage(Adw.NavigationPage):
 
         if not self.logging:
             self.logging = True
-            self.process_row.set_subtitle("Parar WebSocket")
+            self.process_row.set_title("Parar Log")
             button.set_icon_name("xsi-media-playback-stop-symbolic")
-            genset.send_notifications("Estado", "Iniciando Websocket")
+            genset.send_notifications("Estado", "Iniciando log")
 
             for controls in gtk_controls:
                 controls.set_sensitive(False)
 
-            serws.start_serial_monitor(self.update_data_label, 
-                                       rsport_info, 
-                                       baudrate_info, 
-                                       databits_info, 
-                                       parity_info,
-                                       stopbits_info, 
-                                       flowcontrol_info, 
-                                       "Xon/Xoff", 
-                                       ipport_info,
-                                       wsport_info)
+            seroper.logs_serial_monitor(None,
+                                        rsport_info,
+                                        baudrate_info,
+                                        databits_info,
+                                        parity_info,
+                                        stopbits_info,
+                                        flowcontrol_info,
+                                        "Xon/Xoff")
             
         else:
             self.logging = False
-            self.process_row.set_subtitle("Iniciar WebSocket")
-            self.data_label.set_label("LecturaWS: 0")
+            self.process_row.set_title("Iniciar Log")
             button.set_icon_name("xsi-media-playback-start-symbolic")
-            genset.send_notifications("Estado", "Deteniendo Websocket")
+            genset.send_notifications("Estado", "Deteniendo log")
 
             for control in gtk_controls:
                 control.set_sensitive(True)
 
-            serws.stop_rs()
+            seroper.stop_read_serial()

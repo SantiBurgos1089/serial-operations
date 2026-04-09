@@ -25,7 +25,7 @@ class MainWindow(Adw.ApplicationWindow):
 
         # Informacion general de la ventana de aplicacion e icono opcional
         self.set_title("Operaciones RS232")
-        self.set_default_size(800, 700)
+        self.set_default_size(800, 750)
         self.set_icon_name("network-transmit-receive")
 
         # Variables generales

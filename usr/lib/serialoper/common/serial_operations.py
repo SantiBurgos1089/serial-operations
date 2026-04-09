@@ -6,9 +6,12 @@ import websockets
 from gi.repository import GLib
 from .settings_app import GeneralSettings
 
-# Mapeando los valores y parametros de configuracion de puerto serial a los controles creados en el frontend
-# Si un valor segun su frontend no corresponde en texto puede hacer el cambio manualmente en el diccionario, 
-# si así es requerido, pero estos deben ser valores validos y existentes en base a la libreria pyserial
+# ──────────────────────────────────────────────────────────────────────────────
+# Valores de configuracion de puerto serial a controles en frontend.
+# Si un valor segun su frontend utilizado no corresponde en texto puede hacer el
+# cambio de manera manual en el diccionario si asi es requerido, pero estos deben
+# ser valores validos y existentes en base a la libreria pyserial.
+# ──────────────────────────────────────────────────────────────────────────────
 
 # Data bits
 DATABITS_MAP = {
@@ -43,6 +46,37 @@ FLOWCONTROL_MAP = {
     "Xon/Xoff": False,
     }
 
+# ──────────────────────────────────────────────────────────────────────────────
+# Valores de configuracion de valores en equipos seriales RS232
+# Los datos aca descritos son valores generales existentes en varios equipos en 
+# base a configuraciones existentes, no hay un estandar definido y puede agregar 
+# otros valores que considere que no existan si asi lo considera necesario para
+# su frontend ocupado.
+# ──────────────────────────────────────────────────────────────────────────────
+
+# Baudrate de equipos seriales
+BAUDRATE = [
+    "100", "300", "600", "1200", "2400", "4800",
+    "9600", "14400", "19200", "38400", "56000", 
+    "57600", "115200", "128000", "256000"
+]
+
+# Databits
+DATA_BITS = ["5", "6", "7", "8"]
+
+# Paridad
+PARITY = ["Ninguna", "Par", "Impar", "Espacio", "Marca"]
+
+# Bit parada
+STOP_BITS = ["1", "1.5", "2"]
+
+# Control de flujo
+FLOW_CONTROL = ["Ninguno", "Hardware", "Xon/Xoff"]
+
+# Puerto websocket
+WEBSOCKET_PORT = ["5050", "8765", "9000"]
+
+
 genset = GeneralSettings()
 
 # ──────────────────────────────────────────────────────────────────────────────
@@ -57,15 +91,17 @@ class SerialConfig():
 
     # Recibe los parametros de configuracion del puerto serial desde el frontend, mapeandolos a valores compatibles con pyserial
     # utilizando los diccionarios de mapeo definidos en el constructor, y luego construye el objeto con esos valores.
-    def build_serial_port(self, port, baudrate, databits, parity="Ninguna", stopbits="1", flowcontrol="Ninguno", xonxoff="Xon/Xoff"):
+    def build_serial_port(self, port, baudrate, databits, parity="Ninguna", stopbits="1", 
+                          hw_flowcontrol="Ninguno", sw_flowcontrol="Xon/Xoff", hw_timeout=1):
         # Obtiene los valores del diccionario en base a lo recibido como parametro inicial y lo asigna al mismo parametro
         # Caso contrario, retorna un valor por defecto o el valor que, idealmente, no afecte operatividad
         baudrate = int(baudrate)
         databits = int(DATABITS_MAP.get(databits, serial.EIGHTBITS))
         parity = PARITY_MAP.get(parity, serial.PARITY_NONE)
         stopbits = STOPBITS_MAP.get(stopbits, serial.STOPBITS_ONE)
-        flowcontrol = FLOWCONTROL_MAP.get(flowcontrol, False)
-        xonxoff = FLOWCONTROL_MAP.get("Xon/Xoff", False)
+        hw_flowcontrol = FLOWCONTROL_MAP.get(hw_flowcontrol, False)
+        sw_flowcontrol = FLOWCONTROL_MAP.get(sw_flowcontrol, False)
+        hw_timeout = float(hw_timeout)
 
         try:
             self.serial_port = serial.Serial(
@@ -74,9 +110,9 @@ class SerialConfig():
                 bytesize=databits,
                 parity=parity,
                 stopbits=stopbits,
-                rtscts=flowcontrol,  # Control de flujo por hardware
-                xonxoff=xonxoff,      # Control de flujo por software
-                timeout=1
+                rtscts=hw_flowcontrol, # Control de flujo por hardware
+                xonxoff=sw_flowcontrol, # Control de flujo por software
+                timeout=hw_timeout
             )
             #print(f"Puerto serial {port} configurado y abierto exitosamente.")
             self.is_running = True
@@ -108,8 +144,8 @@ class SerialReader(SerialConfig):
         self.read_thread = None
 
     # Configura el puerto con build_serial_port (heredado) e inicia el hilo de lectura.
-    def logs_serial_monitor(self, callback, sm_port, sm_baudrate, sm_databits, 
-                            sm_parity, sm_stopbits, sm_flowcontrol, sm_swflowcontrol):
+    def logs_serial_monitor(self, callback, sm_port, sm_baudrate, sm_databits, sm_parity, 
+                            sm_stopbits, sm_hwflowcontrol, sm_swflowcontrol, sm_timeout):
         self.callback = callback
         self.is_running = True
 
@@ -119,8 +155,9 @@ class SerialReader(SerialConfig):
             databits = sm_databits,
             parity = sm_parity,
             stopbits = sm_stopbits,
-            flowcontrol = sm_flowcontrol,
-            xonxoff = sm_swflowcontrol,
+            hw_flowcontrol = sm_hwflowcontrol,
+            sw_flowcontrol= sm_swflowcontrol,
+            hw_timeout = sm_timeout
         )
 
         if not serial_reader:
@@ -197,7 +234,7 @@ class SerialWebsocket(SerialConfig):
 
 
     def start_serial_monitor(self, gtk_callback, rs_port, rs_baudrate, rs_databits, rs_parity, 
-                             rs_stopbits, rs_flowcontrol, rs_swflowcontrol, ws_host, ws_port):
+                             rs_stopbits, rs_hwflowcontrol, rs_swflowcontrol, rs_timeout, ws_host, ws_port):
         self.is_running = True
 
         serial_reader = self.build_serial_port(
@@ -206,8 +243,9 @@ class SerialWebsocket(SerialConfig):
             databits = rs_databits,
             parity = rs_parity,
             stopbits = rs_stopbits,
-            flowcontrol = rs_flowcontrol,
-            xonxoff = rs_swflowcontrol,
+            hw_flowcontrol = rs_hwflowcontrol,
+            sw_flowcontrol = rs_swflowcontrol,
+            hw_timeout = rs_timeout
         )
 
         if not serial_reader:

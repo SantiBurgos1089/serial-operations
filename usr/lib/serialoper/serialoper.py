@@ -13,7 +13,7 @@ except(ValueError, ImportError):
 
 # Importacion de secciones
 from instructions_page import InstructionsPage
-from serial_monitor_page import SerialMonitorPage
+from monitor_page import MonitorPage
 from websocket_page import WebsocketPage
 
 # Application ID
@@ -25,8 +25,8 @@ class MainWindow(Adw.ApplicationWindow):
 
         # Informacion general de la ventana de aplicacion e icono opcional
         self.set_title("Operaciones RS232")
-        self.set_default_size(800, 700)
-        self.set_icon_name("network-transmit-receive")
+        self.set_default_size(800, 750)
+        self.set_icon_name("application-x-firmware")
 
         # Variables generales
 
@@ -77,7 +77,7 @@ class MainWindow(Adw.ApplicationWindow):
         # Manejo de la navegacion por cada ActionRow definido
         def on_row_selected(listbox, row):
             if row == monitor_row:
-                self.split_view.set_content(SerialMonitorPage())
+                self.split_view.set_content(MonitorPage())
             elif row == ws_row:
                 self.split_view.set_content(WebsocketPage())
         #    elif row == sys_row:

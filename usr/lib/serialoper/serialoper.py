@@ -70,7 +70,7 @@ class MainWindow(Adw.ApplicationWindow):
 
         # ActionRow para la seccion de Configuracion de servicio
         sys_row = Adw.ActionRow()
-        sys_row.set_title("Servicio OS")
+        sys_row.set_title("Configuracion servicio")
         sys_icon = Gtk.Image.new_from_icon_name("xsi-sharedlib-symbolic")
         sys_row.add_prefix(sys_icon)
         sidebar_listbox.append(sys_row)

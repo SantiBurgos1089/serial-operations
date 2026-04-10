@@ -88,6 +88,7 @@ class SerialConfig():
     def __init__(self):
         self.serial_port = None
         self.is_running = False
+        self.saved_config = {}
 
     # Recibe los parametros de configuracion del puerto serial desde el frontend, mapeandolos a valores compatibles con pyserial
     # utilizando los diccionarios de mapeo definidos en el constructor, y luego construye el objeto con esos valores.
@@ -101,6 +102,16 @@ class SerialConfig():
         stopbits = STOPBITS_MAP.get(stopbits, serial.STOPBITS_ONE)
         hw_flowcontrol = FLOWCONTROL_MAP.get(hw_flowcontrol, False)
         hw_timeout = float(hw_timeout)
+
+        self.saved_config = {
+            "serial_port": port,
+            "baudrate": baudrate,
+            "databits": databits,
+            "parity": parity,
+            "stopbits": stopbits,
+            "flowcontrol": hw_flowcontrol,
+            "timeout": hw_timeout
+        }
 
         try:
             self.serial_port = serial.Serial(

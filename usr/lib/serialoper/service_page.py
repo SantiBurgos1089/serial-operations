@@ -16,10 +16,9 @@ import common.settings_app
 
 # Variables adicionales
 genset = common.settings_app.GeneralSettings()
-serws = common.serial_operations.SerialWebsocket()
 
 # Configuracion de la seccion central donde iran todas las subsecciones
-class WebsocketPage(Adw.NavigationPage):
+class ServicePage(Adw.NavigationPage):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -303,18 +302,6 @@ class WebsocketPage(Adw.NavigationPage):
 
             for controls in gtk_controls:
                 controls.set_sensitive(False)
-
-            serws.start_serial_monitor(self.update_data_label,
-                                       rsport_info,
-                                       baudrate_info,
-                                       databits_info,
-                                       parity_info,
-                                       stopbits_info,
-                                       flowcontrol_info,
-                                       timeout_info,
-                                       ipport_info,
-                                       wsport_info 
-            )
             
         else:
             self.logging = False
@@ -325,5 +312,3 @@ class WebsocketPage(Adw.NavigationPage):
 
             for control in gtk_controls:
                 control.set_sensitive(True)
-
-            serws.stop_rs()

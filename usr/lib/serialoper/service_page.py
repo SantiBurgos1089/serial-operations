@@ -187,7 +187,6 @@ class ServicePage(Adw.NavigationPage):
         " a un archivo json")
         self.export_button = Gtk.Button()
         self.export_button.set_icon_name("xsi-document-save-as-symbolic")
-        #self.export_button.set_hexpand(True)
         ##self.export_button.connect("clicked", self.export_conf)
         self.export_row.add_suffix(self.export_button)
 
@@ -200,7 +199,6 @@ class ServicePage(Adw.NavigationPage):
         self.import_row.set_subtitle("Importa configuracion desde un archivo json")
         self.import_button = Gtk.Button()
         self.import_button.set_icon_name("xsi-document-open-symbolic")
-        #self.import_button.set_hexpand(True)
         ##self.import_button.connect("clicked", self.export_conf)
         self.import_row.add_suffix(self.import_button)
 
@@ -234,37 +232,6 @@ class ServicePage(Adw.NavigationPage):
         ## 4. Notificamos al usuario (opcional)
         #genset.send_notifications("Estado", "Lista de puertos actualizada")
         #print("[Sistema] Puertos seriales refrescados."
-
-    def ws_toggle_log(self, button):
-        # Cambiamos el estado del estado de logging
-        self.logging = not self.logging
-
-        # Obtiene todos los controles creados hasta el momento que puedan ser
-        # manipulados por el usuario, otros controles no son considerados
-        gtk_controls = [
-            self.rsport_row,
-            self.baudrate_row,
-            self.databits_row,
-            self.parity_row,
-            self.stopbits_row,
-            self.flowcontrol_row,
-            self.timeout_row,
-            self.ipport_row,
-            self.wsport_row
-        ]
-
-        for controls in gtk_controls:
-            if self.logging:
-                self.process_row.set_subtitle("Parar WebSocket")
-                button.set_icon_name("xsi-media-playback-stop-symbolic")
-                controls.set_sensitive(False)
-            else:
-                self.process_row.set_subtitle("Iniciar WebSocket")
-                button.set_icon_name("xsi-media-playback-start-symbolic")
-                controls.set_sensitive(True)
-
-    def update_data_label(self, value):
-        self.data_label.set_label(value)
 
     def ws_log_data(self, button):
         ## Cambiamos el estado del estado de logging

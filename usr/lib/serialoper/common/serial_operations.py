@@ -2,6 +2,7 @@ import asyncio
 import re
 import serial
 import threading
+import time
 import websockets
 from gi.repository import GLib
 from .settings_app import GeneralSettings
@@ -134,6 +135,28 @@ class SerialConfig():
             self.is_running = False
             return False
         
+    # Proceso para realizar una reconexion al puerto serial
+    def reconnect_serial(self):
+        if not self.saved_config:
+            return False
+        
+        try:
+            #print("[Reconexión] Intentando reconectar puerto serial...")
+
+            return self.build_serial_port(
+                self.saved_config["serial_port"],
+                self.saved_config["baudrate"],
+                self.saved_config["databits"],
+                self.saved_config["parity"],
+                self.saved_config["stopbits"],
+                self.saved_config["flowcontrol"],
+                self.saved_config["timeout"]
+            )
+        
+        except Exception as error_exception:
+            #print(f"[Reconexión] Fallo al reconectar: {e}")
+            return False
+        
     # Cierra el puerto serial de forma segura si está abierto
     def close_serial_port(self):
         if self.serial_port and self.serial_port.is_open:
@@ -186,8 +209,18 @@ class SerialReader(SerialConfig):
 
             except serial.SerialException as serial_error_exception:
                 #print(serial_error_exception)
-                genset.send_notifications("Error", f"Error al leer el puerto: {serial_error_exception}", "xsi-dialog-error-symbolic")
-                break
+                #genset.send_notifications("Error", f"Error al leer el puerto: {serial_error_exception}", "xsi-dialog-error-symbolic")
+                #break
+                genset.send_notifications("Error", "Puerto desconectado, intentando reconectar...", "xsi-dialog-error-symbolic")
+
+                self.close_serial_port()
+
+                while self.is_running:
+                    if self.reconnect_serial():
+                        genset.send_notifications("Estado", "Puerto reconectado correctamente")
+                        break
+
+                    time.sleep(3)
 
             except Exception as error_exception:
                 #print(error_exception)
@@ -299,8 +332,21 @@ class SerialWebsocket(SerialConfig):
                     asyncio.run_coroutine_threadsafe(self.broadcast(final_value), self.loop)
 
             except serial.SerialException as serial_error_exception:
-                print(f"[Error RS232 WS] {serial_error_exception}")
-                break
+                #print(f"[Error RS232 WS] {serial_error_exception}")
+                #break
+                if gtk_callback:
+                    GLib.idle_add(gtk_callback, "Puerto desconectado, intentando reconectar...")
+
+                self.close_serial_port()
+
+                while self.is_running:
+                    if self.reconnect_serial():
+                        print("[Reconexión WS] Puerto reconectado")
+
+                    if gtk_callback:
+                        GLib.idle_ad(gtk_callback, "Puerto reconectado correctamente")
+
+                    break
 
             except Exception as error_exception:
                 print(f"[Error Inesperado WS] {error_exception}")

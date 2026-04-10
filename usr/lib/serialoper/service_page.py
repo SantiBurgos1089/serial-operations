@@ -1,6 +1,7 @@
+import json
 import gi
 gi.require_version('Gtk', '4.0')
-from gi.repository import Gtk
+from gi.repository import Gtk, Gio, GLib
 
 try:
     # Importing libAdapta first
@@ -30,8 +31,6 @@ class ServicePage(Adw.NavigationPage):
 
         self.ws_headerbar = Adw.HeaderBar()
         self.ws_headerbar.pack_start(self.refresh_ports_button)
-
-        self.logging = False
 
         # Seccion central donde ira la pagina de preferencias
         self.ws_central_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
@@ -187,7 +186,7 @@ class ServicePage(Adw.NavigationPage):
         " a un archivo json")
         self.export_button = Gtk.Button()
         self.export_button.set_icon_name("xsi-document-save-as-symbolic")
-        ##self.export_button.connect("clicked", self.export_conf)
+        self.export_button.connect("clicked", self.export_conf)
         self.export_row.add_suffix(self.export_button)
 
         # Add row to section
@@ -199,7 +198,7 @@ class ServicePage(Adw.NavigationPage):
         self.import_row.set_subtitle("Importa configuracion desde un archivo json")
         self.import_button = Gtk.Button()
         self.import_button.set_icon_name("xsi-document-open-symbolic")
-        ##self.import_button.connect("clicked", self.export_conf)
+        ##self.import_button.connect("clicked", self.import_conf)
         self.import_row.add_suffix(self.import_button)
 
         # Add row to section
@@ -232,6 +231,95 @@ class ServicePage(Adw.NavigationPage):
         ## 4. Notificamos al usuario (opcional)
         #genset.send_notifications("Estado", "Lista de puertos actualizada")
         #print("[Sistema] Puertos seriales refrescados."
+
+    def export_conf(self, button):
+        # Obtengo el dato seleccionado del ComboRow, para ello realizo lo siguiente
+        # Obtengo el numero del elemento seleccionado
+        # En base a ese numero, obtengo dicho elemento del StringList como valor
+        # Todo esto recopila la informacion necesaria para el archivo json posterior
+        rsport_info = self.rsport_row.get_selected()
+        rsport_info = self.rsport_string_list.get_string(rsport_info)
+
+        baudrate_info = self.baudrate_row.get_selected()
+        baudrate_info = self.baudrate_string_list.get_string(baudrate_info)
+
+        databits_info = self.databits_row.get_selected()
+        databits_info = self.databits_string_list.get_string(databits_info)
+
+        parity_info = self.parity_row.get_selected()
+        parity_info = self.parity_string_list.get_string(parity_info)
+
+        stopbits_info = self.stopbits_row.get_selected()
+        stopbits_info = self.stopbits_string_list.get_string(stopbits_info)
+
+        flowcontrol_info = self.flowcontrol_row.get_selected()
+        flowcontrol_info = self.flowcontrol_string_list.get_string(flowcontrol_info)
+
+        timeout_info = self.time_scale.get_value()
+
+        ipport_info = self.ipport_row.get_selected()
+        ipport_info = self.ipport_string_list.get_string(ipport_info)
+
+        wsport_info = self.wsport_row.get_selected()
+        wsport_info = self.wsport_string_list.get_string(wsport_info)
+
+        # Recopilamos la informacion necesaria para el archivo json en base a lo anterior
+        json_config_data = {
+            "serial_port": rsport_info,
+            "baudrate": int(baudrate_info),
+            "databits": databits_info,
+            "parity": parity_info,
+            "stopbits": stopbits_info,
+            "flowcontrol": flowcontrol_info,
+            "timeout": float(timeout_info),
+            "ip_port": ipport_info,
+            "ws_port": int(wsport_info)
+        }
+
+        # Configuramos el dialogo para guardar en una ruta
+        save_dialog = Gtk.FileDialog.new()
+        save_dialog.set_title("Guardar configuración actual como...")
+        save_dialog.set_initial_name("serial_ws_config.json") # Nombre sugerido por defecto
+
+        # Filtro para sugiera .json como extension
+        file_filter = Gtk.FileFilter()
+        file_filter.set_name("Archivos JSON")
+        file_filter.add_pattern("*.json")
+
+        filter_ls = Gio.ListStore.new(Gtk.FileFilter)
+        filter_ls.append(file_filter)
+        save_dialog.set_filters(filter_ls)
+
+        # Abrimos el dialogo de forma asincrona
+        save_window = self.get_root()
+        save_dialog.save(save_window, None, self.export_is_ready)
+
+    def export_is_ready(self, dialog, result):
+        try:
+            # Obtiene el objeto Gio.File seleccionado por el usuario
+            file = dialog.save_finish(result)
+
+            if file is not None:
+                save_path = file.get_path()
+
+                # Si el usuario no le puso extensión .json, se la agregamos por seguridad
+                if not save_path.endswith('.json'):
+                    save_path += '.json'
+
+                with open(save_path, "w") as json_file:
+                    json.dump(self.json_config_data, json_file, indent=4)
+
+                genset.send_notifications("Finalizado", f"Configuración exportada a {file.get_basename()}")
+                #print(f"[Sistema] Archivo exportado correctamente en: {save_path}")
+
+        # El usuario canceló o cerró la ventana de guardado
+        except GLib.Error:
+            #print("[Sistema] Operación de exportación cancelada por el usuario.")
+            pass
+
+        except Exception as error_exception:
+            genset.send_notifications("Error", f"No se pudo guardar: {error_exception}", "xsi-dialog-error-symbolic")
+            #print(f"[Error Exportación] {error_exception}")
 
     def ws_log_data(self, button):
         ## Cambiamos el estado del estado de logging

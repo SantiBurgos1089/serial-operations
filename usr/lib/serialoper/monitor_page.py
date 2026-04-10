@@ -148,8 +148,8 @@ class MonitorPage(Adw.NavigationPage):
         self.process_row.set_title("Iniciar Log")
         self.process_button = Gtk.Button()
         self.process_button.set_icon_name("xsi-media-playback-start-symbolic")
-        #self.process_button.connect("clicked", self.sm_log_data)
-        self.process_button.connect("clicked", self.sm_toggle_log)
+        self.process_button.connect("clicked", self.sm_log_data)
+        #self.process_button.connect("clicked", self.sm_toggle_log)
         self.process_row.add_suffix(self.process_button)
 
         # Add row to section
@@ -275,8 +275,7 @@ class MonitorPage(Adw.NavigationPage):
             self.stopbits_row,
             self.flowcontrol_row,
             self.timeout_row,
-            self.ipport_row,
-            self.wsport_row
+            self.clear_row
         ]
 
         if not self.logging:

@@ -35,13 +35,44 @@ class MonitorPage(Adw.NavigationPage):
         self.logging = False
 
         # Seccion central donde ira la pagina de preferencias
-        self.sm_central_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
+        self.sm_central_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=12)
         self.sm_central_box.set_hexpand(True)
         self.sm_central_box.set_vexpand(True)
 
+        # Creando columna izquierda para lectura de datos
+        self.log_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=8)
+        self.log_box.set_hexpand(True)
+        self.log_box.set_vexpand(True)
+        self.log_box.set_margin_top(12)
+        self.log_box.set_margin_bottom(12)
+        self.log_box.set_margin_start(12)
+
+        # Etiqueta superior para caja de lectura
+        self.log_label = Gtk.Label()
+        self.log_label.set_label("Lectura")
+
+        # TextView para mostrar datos recibidos del puerto serial
+        # Este es añadido dentro de un ScrolledWindow para que dicho 
+        # control muestre barras de desplazamiento conforme crece
+        self.data_textview = Gtk.TextView()
+        self.data_textview.set_wrap_mode(Gtk.WrapMode.WORD)
+        self.data_textview.set_editable(False)
+        self.data_textview.set_hexpand(True)
+        self.data_textview.set_vexpand(True)
+        self.data_scrollview = Gtk.ScrolledWindow()
+        self.data_scrollview.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
+        self.data_scrollview.set_hexpand(True)
+        self.data_scrollview.set_vexpand(True)
+        self.data_scrollview.set_child(self.data_textview)
+
+        # Se añaden los controles creados a la columna izquierda
+        self.log_box.append(self.log_label)
+        self.log_box.append(self.data_scrollview)
+
+        # Creando columna derecha para controles y preferencias
         # PreferencesPage definition
         self.monitor_page = Adw.PreferencesPage()
-        self.monitor_page.set_title("Monitor RS232")
+        #self.monitor_page.set_title("Monitor RS232")
 
         # Serial port section
         self.serial_group = Adw.PreferencesGroup()
@@ -166,26 +197,13 @@ class MonitorPage(Adw.NavigationPage):
         # Add row to section
         self.log_group.add(self.clear_row)
 
-        # TextView para mostrar datos recibidos del puerto serial
-        # Incluye un ScrolledWindow para que dicho TextView muestre barras de desplazamiento
-        self.data_textview = Gtk.TextView()
-        self.data_textview.set_wrap_mode(Gtk.WrapMode.WORD)
-        self.data_textview.set_editable(False)
-        self.data_textview.set_hexpand(True)
-        self.data_textview.set_vexpand(True)
-        self.data_scrollview = Gtk.ScrolledWindow()
-        self.data_scrollview.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
-        self.data_scrollview.set_hexpand(True)
-        self.data_scrollview.set_vexpand(True)
-        self.data_scrollview.set_child(self.data_textview)
-
-        # Add TextView to section
-        self.log_group.add(self.data_scrollview)
-
         # Add section with all controls to page
         self.monitor_page.add(self.log_group)
 
-        # Añadiendo la seccion de contenido a la seccion central
+        # Se añaden los siguientes elementos en dicho orden a la seccion central
+        # Columna izquierda con los logs de lectura
+        # Columna derecha con los controles requeridos para uso
+        self.sm_central_box.append(self.log_box)
         self.sm_central_box.append(self.monitor_page)
 
         # Añadiendo la cabecera y contenido

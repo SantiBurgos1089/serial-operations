@@ -180,8 +180,8 @@ class WebsocketPage(Adw.NavigationPage):
         self.process_button = Gtk.Button()
         #self.process_button.set_label("Iniciar WebSocket")
         self.process_button.set_icon_name("xsi-media-playback-start-symbolic")
-        #self.process_button.connect("clicked", self.ws_log_data)
-        self.process_button.connect("clicked", self.ws_toggle_log)
+        self.process_button.connect("clicked", self.ws_log_data)
+        #self.process_button.connect("clicked", self.ws_toggle_log)
         self.process_row.add_suffix(self.data_label)
         self.process_row.add_suffix(self.process_button)
 

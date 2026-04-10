@@ -192,17 +192,17 @@ class ServicePage(Adw.NavigationPage):
         # Add row to section
         self.service_group.add(self.export_row)
 
-        # Row para importar configuracion
-        self.import_row = Adw.ActionRow()
-        self.import_row.set_title("Importar configuracion actual")
-        self.import_row.set_subtitle("Importa configuracion desde un archivo json")
-        self.import_button = Gtk.Button()
-        self.import_button.set_icon_name("xsi-document-open-symbolic")
-        ##self.import_button.connect("clicked", self.import_conf)
-        self.import_row.add_suffix(self.import_button)
+        ## Row para importar configuracion
+        #self.import_row = Adw.ActionRow()
+        #self.import_row.set_title("Importar configuracion actual")
+        #self.import_row.set_subtitle("Importa configuracion desde un archivo json")
+        #self.import_button = Gtk.Button()
+        #self.import_button.set_icon_name("xsi-document-open-symbolic")
+        #self.import_button.connect("clicked", self.import_conf)
+        #self.import_row.add_suffix(self.import_button)
 
-        # Add row to section
-        self.service_group.add(self.import_row)
+        ## Add row to section
+        #self.service_group.add(self.import_row)
 
         # Add section with all controls to page
         self.service_page.add(self.service_group)
@@ -264,7 +264,7 @@ class ServicePage(Adw.NavigationPage):
         wsport_info = self.wsport_string_list.get_string(wsport_info)
 
         # Recopilamos la informacion necesaria para el archivo json en base a lo anterior
-        json_config_data = {
+        self.json_config_data = {
             "serial_port": rsport_info,
             "baudrate": int(baudrate_info),
             "databits": databits_info,
@@ -320,70 +320,3 @@ class ServicePage(Adw.NavigationPage):
         except Exception as error_exception:
             genset.send_notifications("Error", f"No se pudo guardar: {error_exception}", "xsi-dialog-error-symbolic")
             #print(f"[Error Exportación] {error_exception}")
-
-    def ws_log_data(self, button):
-        ## Cambiamos el estado del estado de logging
-        #self.logging = not self.logging
-
-        # Obtengo el dato seleccionado del ComboRow, para ello realizo lo siguiente
-        # Obtengo el numero del elemento seleccionado
-        # En base a ese numero, obtengo dicho elemento del StringList como valor
-        # Se obtiene un texto de lo seleccionado y se convertira en numerico en la funcion
-        rsport_info = self.rsport_row.get_selected()
-        rsport_info = self.rsport_string_list.get_string(rsport_info)
-
-        baudrate_info = self.baudrate_row.get_selected()
-        baudrate_info = self.baudrate_string_list.get_string(baudrate_info)
-
-        databits_info = self.databits_row.get_selected()
-        databits_info = self.databits_string_list.get_string(databits_info)
-
-        parity_info = self.parity_row.get_selected()
-        parity_info = self.parity_string_list.get_string(parity_info)
-
-        stopbits_info = self.stopbits_row.get_selected()
-        stopbits_info = self.stopbits_string_list.get_string(stopbits_info)
-
-        flowcontrol_info = self.flowcontrol_row.get_selected()
-        flowcontrol_info = self.flowcontrol_string_list.get_string(flowcontrol_info)
-
-        timeout_info = self.time_scale.get_value()
-
-        ipport_info = self.ipport_row.get_selected()
-        ipport_info = self.ipport_string_list.get_string(ipport_info)
-
-        wsport_info = self.wsport_row.get_selected()
-        wsport_info = self.wsport_string_list.get_string(wsport_info)
-
-        # Obtiene todos los controles creados hasta el momento que puedan ser
-        # manipulados por el usuario, otros controles no son considerados
-        gtk_controls = [
-            self.rsport_row,
-            self.baudrate_row,
-            self.databits_row,
-            self.parity_row,
-            self.stopbits_row,
-            self.flowcontrol_row,
-            self.timeout_row,
-            self.ipport_row,
-            self.wsport_row
-        ]
-
-        if not self.logging:
-            self.logging = True
-            self.process_row.set_subtitle("Parar WebSocket")
-            button.set_icon_name("xsi-media-playback-stop-symbolic")
-            genset.send_notifications("Estado", "Iniciando Websocket")
-
-            for controls in gtk_controls:
-                controls.set_sensitive(False)
-            
-        else:
-            self.logging = False
-            self.process_row.set_subtitle("Iniciar WebSocket")
-            self.data_label.set_label("LecturaWS: 0")
-            button.set_icon_name("xsi-media-playback-start-symbolic")
-            genset.send_notifications("Estado", "Deteniendo Websocket")
-
-            for control in gtk_controls:
-                control.set_sensitive(True)

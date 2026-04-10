@@ -15,6 +15,7 @@ except(ValueError, ImportError):
 from instructions_page import InstructionsPage
 from monitor_page import MonitorPage
 from websocket_page import WebsocketPage
+from service_page import ServicePage
 
 # Application ID
 app_id = "xyz.agatinos.serialoper"
@@ -67,12 +68,12 @@ class MainWindow(Adw.ApplicationWindow):
         ws_row.add_prefix(ws_icon)
         sidebar_listbox.append(ws_row)
 
-        ## ActionRow para la seccion de servicio de sistema
-        #sys_row = Adw.ActionRow()
-        #sys_row.set_title("Servicio OS")
-        #sys_icon = Gtk.Image.new_from_icon_name("xsi-sharedlib-symbolic")
-        #sys_row.add_prefix(sys_icon)
-        #sidebar_listbox.append(sys_row)
+        # ActionRow para la seccion de Configuracion de servicio
+        sys_row = Adw.ActionRow()
+        sys_row.set_title("Servicio OS")
+        sys_icon = Gtk.Image.new_from_icon_name("xsi-sharedlib-symbolic")
+        sys_row.add_prefix(sys_icon)
+        sidebar_listbox.append(sys_row)
 
         # Manejo de la navegacion por cada ActionRow definido
         def on_row_selected(listbox, row):
@@ -80,8 +81,8 @@ class MainWindow(Adw.ApplicationWindow):
                 self.split_view.set_content(MonitorPage())
             elif row == ws_row:
                 self.split_view.set_content(WebsocketPage())
-        #    elif row == sys_row:
-        #        self.split_view.set_content(OSSystemPage())
+            elif row == sys_row:
+                self.split_view.set_content(ServicePage())
 
         # Conectando la accion de mostrar el menu en base a la seleccion de la fila
         sidebar_listbox.connect("row-selected", on_row_selected)

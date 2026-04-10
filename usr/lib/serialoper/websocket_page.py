@@ -311,7 +311,6 @@ class WebsocketPage(Adw.NavigationPage):
                                        parity_info,
                                        stopbits_info,
                                        flowcontrol_info,
-                                       "Xon/Xoff",
                                        timeout_info,
                                        ipport_info,
                                        wsport_info 

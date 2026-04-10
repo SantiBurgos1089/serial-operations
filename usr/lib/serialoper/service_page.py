@@ -39,8 +39,8 @@ class ServicePage(Adw.NavigationPage):
         self.ws_central_box.set_vexpand(True)
 
         # PreferencesPage definition
-        self.websocket_page = Adw.PreferencesPage()
-        self.websocket_page.set_title("Websocket RS232")
+        self.service_page = Adw.PreferencesPage()
+        self.service_page.set_title("Configuracion para servicio sistema")
 
         # Serial port section
         self.serial_group = Adw.PreferencesGroup()
@@ -135,7 +135,7 @@ class ServicePage(Adw.NavigationPage):
         self.serial_group.add(self.timeout_row)
 
         # Add section with all controls to page
-        self.websocket_page.add(self.serial_group)
+        self.service_page.add(self.serial_group)
 
 
         # Websocket section
@@ -170,35 +170,55 @@ class ServicePage(Adw.NavigationPage):
         # Add row to section
         self.websocket_group.add(self.wsport_row)
 
-        # Row para proceso de inicio websocket
-        self.process_row = Adw.ActionRow()
-        self.process_row.set_title("Gestiona el inicio y finalizacion del websocket")
-        self.process_row.set_subtitle("Iniciar WebSocket")
-        self.data_label = Gtk.Label()
-        self.data_label.set_label("Lectura WS: 0")
-        self.process_button = Gtk.Button()
-        #self.process_button.set_label("Iniciar WebSocket")
-        self.process_button.set_icon_name("xsi-media-playback-start-symbolic")
-        self.process_button.connect("clicked", self.ws_log_data)
-        #self.process_button.connect("clicked", self.ws_toggle_log)
-        self.process_row.add_suffix(self.data_label)
-        self.process_row.add_suffix(self.process_button)
+        # Add section with all controls to page
+        self.service_page.add(self.websocket_group)
+
+
+        # Service section
+        self.service_group = Adw.PreferencesGroup()
+        self.service_group.set_title("Configuracion para el servicio systemd")
+        self.service_group.set_description("Se exportaran los parametros colocados en las secciones " \
+        "de puerto serial y websocket para ser utilizados por el servicio de systemd correspondiente.")
+
+        # Row para exportar configuracion
+        self.export_row = Adw.ActionRow()
+        self.export_row.set_title("Exportar configuracion actual")
+        self.export_row.set_subtitle("Exporta o sobreescribe la configuracion actual" \
+        " a un archivo json")
+        self.export_button = Gtk.Button()
+        self.export_button.set_icon_name("xsi-document-save-as-symbolic")
+        #self.export_button.set_hexpand(True)
+        ##self.export_button.connect("clicked", self.export_conf)
+        self.export_row.add_suffix(self.export_button)
 
         # Add row to section
-        self.websocket_group.add(self.process_row)
+        self.service_group.add(self.export_row)
+
+        # Row para importar configuracion
+        self.import_row = Adw.ActionRow()
+        self.import_row.set_title("Importar configuracion actual")
+        self.import_row.set_subtitle("Importa configuracion desde un archivo json")
+        self.import_button = Gtk.Button()
+        self.import_button.set_icon_name("xsi-document-open-symbolic")
+        #self.import_button.set_hexpand(True)
+        ##self.import_button.connect("clicked", self.export_conf)
+        self.import_row.add_suffix(self.import_button)
+
+        # Add row to section
+        self.service_group.add(self.import_row)
 
         # Add section with all controls to page
-        self.websocket_page.add(self.websocket_group)
+        self.service_page.add(self.service_group)
 
         # Añadiendo la seccion de contenido a la seccion central
-        self.ws_central_box.append(self.websocket_page)
+        self.ws_central_box.append(self.service_page)
 
         # Añadiendo la cabecera y contenido
         self.ws_toolbar = Adw.ToolbarView()
         self.ws_toolbar.add_top_bar(self.ws_headerbar)
         self.ws_toolbar.set_content(self.ws_central_box)
 
-        self.set_title("Websocket RS232")
+        self.set_title("Configuracion para servicio sistema")
         self.set_child(self.ws_toolbar)
 
     def sm_refresh_ports(self, button):

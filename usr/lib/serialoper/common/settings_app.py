@@ -1,5 +1,4 @@
 import gi
-import json
 import os
 import re
 import socket
@@ -61,34 +60,3 @@ class GeneralSettings():
                 detected_ports.append(f"/dev/{port}")
 
         return detected_ports
-    
-    # Cargo configuracion de archivo JSON
-    # Con esto cargo los datos requeridos de mi archivo JSON creado para revision
-    # Este metodo se utiliza principalmente para el servicio en consola, sin embargo, 
-    # se puede pasar True como parametro adicional (se toma como False por defecto)
-    def load_config(self, use_gui = False):
-        config_path = None
-        system_path = "/etc/serialoper/config.json"
-        user_path = os.path.expanduser("~/.config/serialoper/config.json")
-
-        if os.path.exists(user_path):
-            config_path = user_path
-        elif os.path.exists(system_path):
-            config_path = system_path
-        else:
-            config_path = None
-
-        if config_path is None:
-            if use_gui is False:
-                print("[Config] No se encontró archivo de configuración, usando valores por defecto")
-            else:
-                self.send_notifications("Error Config","No se encontró archivo de configuración, usando valores por defecto")
-            return None
-        
-        try:
-            with open(config_path, "r") as f:
-                config_data = json.load(f)
-                return config_data
-
-        except Exception as error_exception:
-            return None

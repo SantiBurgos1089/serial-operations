@@ -93,7 +93,7 @@ class ServicePage(Adw.NavigationPage):
         self.parity_string_list = Gtk.StringList.new()
         for parity in common.serial_operations.PARITY:
             self.parity_string_list.append(parity)
-        self.parity_row.set_model(self.databits_string_list)
+        self.parity_row.set_model(self.parity_string_list)
 
         # Add row to section
         self.serial_group.add(self.parity_row)

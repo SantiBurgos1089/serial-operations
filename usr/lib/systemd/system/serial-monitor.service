@@ -5,8 +5,8 @@ After=network.target
 
 [Service]
 Type=simple
-# Comando que ejecuta tu script backend (deberás crearlo más adelante)
-ExecStart=/usr/bin/python3 /usr/bin/propserial-headless
+# Comando que ejecuta el script backend requerido por el servicio
+ExecStart=/usr/bin/serialoper-headless
 # Reinicia el servicio automáticamente si hay un error (ej. puerto ocupado)
 Restart=on-failure
 RestartSec=5
@@ -15,8 +15,8 @@ RestartSec=5
 # User=root o User=tu_usuario_especifico
 # Group=dialout
 # Logs
-# StandardOutput=journal
-# StandardError=journal
+StandardOutput=journal
+StandardError=journal
 
 [Install]
 WantedBy=multi-user.target

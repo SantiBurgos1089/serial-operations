@@ -265,15 +265,19 @@ class ServicePage(Adw.NavigationPage):
 
         # Recopilamos la informacion necesaria para el archivo json en base a lo anterior
         self.json_config_data = {
-            "serial_port": rsport_info,
-            "baudrate": int(baudrate_info),
-            "databits": databits_info,
-            "parity": parity_info,
-            "stopbits": stopbits_info,
-            "flowcontrol": flowcontrol_info,
-            "timeout": float(timeout_info),
-            "ip_port": ipport_info,
-            "ws_port": int(wsport_info)
+            "serial":{
+                "serial_port": rsport_info,
+                "baudrate": int(baudrate_info),
+                "databits": databits_info,
+                "parity": parity_info,
+                "stopbits": stopbits_info,
+                "flowcontrol": flowcontrol_info,
+                "timeout": float(timeout_info)
+            },
+            "websocket": {
+                "ip_port": ipport_info,
+                "ws_port": int(wsport_info)
+            }
         }
 
         # Configuramos el dialogo para guardar en una ruta

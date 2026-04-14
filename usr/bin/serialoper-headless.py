@@ -12,8 +12,8 @@ sys.path.append("/usr/lib/serialoper")
 
 # Descomentar la variable necesaria o escribir la ubicacion manualmente si no
 # se encuentra en algunas rutas predefinidas aca abajo.
-#CONFIG_PATH = "/etc/serialoper/config.json"
-CONFIG_PATH = os.path.expanduser("~/.config/serialoper/config.json")
+#CONFIG_PATH = "/etc/serialoper/serial_ws_config.json"
+CONFIG_PATH = os.path.expanduser("~/.config/serialoper/serial_ws_config.json")
 
 class SerialHeadless:
     def __init__(self):

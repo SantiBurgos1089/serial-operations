@@ -1,0 +1,22 @@
+[Unit]
+Description=Servicio Serial WebSocket
+# Asegura que el servicio inicie solo despues de que la red este lista
+After=network.target
+
+[Service]
+Type=simple
+# Comando que ejecuta el script backend requerido por el servicio
+ExecStart=/usr/bin/serialoper-headless
+# Reinicia el servicio automáticamente si hay un error (ej. puerto ocupado)
+Restart=on-failure
+RestartSec=5
+
+# Opcional: Si necesitas que corra con permisos para leer /dev/ttyUSB0
+# User=root o User=tu_usuario_especifico
+# Group=dialout
+# Logs
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

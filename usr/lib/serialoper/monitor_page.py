@@ -153,6 +153,20 @@ class MonitorPage(Adw.NavigationPage):
         # Add row to section
         self.serial_group.add(self.flowcontrol_row)
 
+        # Row para modo de lectura (Continuo vs manual)
+        # Varias basculas poseen opcion para mandar impresion manual (presionar un boton para enviar dato) o una impresion continua, 
+        # con esto se valida que, en base a la opcion seleccionada, no se interrumpa el flujo de datos recibido de dicho equipo
+        self.mode_row = Adw.ComboRow()
+        self.mode_row.set_title("Modo Continuo")
+        self.mode_row.set_subtitle("Se recomienda colocar en \"Manual\" si presiona un botón para impresión en su modelo de báscula")
+        self.mode_string_list = Gtk.StringList.new()
+        self.mode_string_list.append("Continuo")
+        self.mode_string_list.append("Manual")
+        self.mode_row.set_model(self.mode_string_list)
+
+        # Add row to section
+        self.serial_group.add(self.mode_row)
+
         # Row para timeout
         self.timeout_row = Adw.ActionRow()
         self.timeout_row.set_title("Timeout")
